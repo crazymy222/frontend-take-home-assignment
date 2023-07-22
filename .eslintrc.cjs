@@ -70,6 +70,12 @@ module.exports = {
       ],
       rules: {
         'import/no-default-export': 'off',
+        'prettier/prettier': [
+          'error',
+          {
+            endOfLine: 'auto',
+          },
+        ],
       },
     },
   ],

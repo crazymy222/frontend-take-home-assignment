@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useRef } from 'react'
 
 import { api } from '@/utils/client/api'
 
@@ -24,7 +24,7 @@ import { api } from '@/utils/client/api'
  */
 
 export const CreateTodoForm = () => {
-  const [todoBody, setTodoBody] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const apiContext = api.useContext()
 
@@ -35,32 +35,38 @@ export const CreateTodoForm = () => {
       },
     })
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (inputRef?.current?.value) {
+      createTodo({
+        body: inputRef?.current?.value,
+      })
+      inputRef.current.value = ''
+    }
+  }
+
   return (
-    <form className="group flex items-center justify-between rounded-12 border border-gray-200 py-2 pr-4 focus-within:border-gray-400">
+    <form
+      onSubmit={handleSubmit}
+      className="group flex items-center justify-between rounded-12 border border-gray-200 py-2 pr-4 focus-within:border-gray-400"
+    >
       <label htmlFor={TODO_INPUT_ID} className="sr-only">
         Add todo
       </label>
 
       <input
         id={TODO_INPUT_ID}
+        ref={inputRef}
         type="text"
         placeholder="Add todo"
-        value={todoBody}
-        onChange={(e) => {
-          setTodoBody(e.target.value)
-        }}
+        defaultValue={''}
         className="flex-1 px-4 text-base placeholder:text-gray-400 focus:outline-none"
       />
 
       <button
-        type="button"
+        type="submit"
         disabled={isCreatingTodo}
-        onClick={() => {
-          createTodo({
-            body: todoBody,
-          })
-          setTodoBody('')
-        }}
+        className="rounded-full bg-gray-700 px-5 py-1.5 font-semibold text-white"
       >
         Add
       </button>
